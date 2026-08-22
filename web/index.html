@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebMagic - AI & Algorithmic Image Enhancer Studio</title>
+  <meta name="description" content="State-of-the-art image enhancement studio. Boost clarity, dynamic range, face restoration, and 4K super-resolution with Generative AI and instant non-AI filters.">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+  <div class="glow-orb orb-3"></div>
+
+  <div class="app-layout">
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <i class="ph-fill ph-magic-wand"></i>
+        </div>
+        <div class="brand-text">
+          <span class="logo-title">Web<span class="gradient-text">Magic</span></span>
+        </div>
+      </div>
+
+      <div class="engine-tabs" role="tablist">
+        <button class="engine-tab active" id="tab-non-ai" data-engine="non-ai" role="tab" aria-selected="true">
+          <i class="ph-bold ph-lightning"></i>
+          <span>Instant Non-AI</span>
+          <span class="chip chip-green">60 FPS Live</span>
+        </button>
+        <button class="engine-tab" id="tab-ai" data-engine="ai" role="tab" aria-selected="false">
+          <i class="ph-bold ph-sparkle"></i>
+          <span>Generative AI (SOTA)</span>
+          <span class="chip chip-purple">Super-Res & Face</span>
+        </button>
+      </div>
+
+      <div class="header-actions">
+        <a href="https://github.com/44tl/WebMagic" target="_blank" rel="noopener" class="btn btn-glass btn-icon" id="btn-github" title="View Source on GitHub">
+          <i class="ph-bold ph-github-logo"></i>
+        </a>
+        <button class="btn btn-glass" id="btn-open-api-modal" title="Configure AI API Keys">
+          <i class="ph-bold ph-key"></i>
+          <span id="api-key-status-text">AI API Keys</span>
+          <span class="key-indicator" id="key-indicator"></span>
+        </button>
+        <button class="btn btn-glass btn-icon" id="btn-show-help" title="WebMagic User Guide & CLI Commands">
+          <i class="ph-bold ph-book-open-text"></i>
+        </button>
+      </div>
+    </header>
+
+    <main class="workspace-grid">
+      <aside class="control-panel glass-card">
+        
+        <div class="panel-section" id="section-non-ai">
+          <div class="section-header">
+            <div class="section-title">
+              <i class="ph-fill ph-sparkle"></i>
+              <h3>1-Click Presets</h3>
+            </div>
+            <button class="btn-text" id="btn-reset-sliders" title="Reset all sliders to preset default">Reset Default</button>
+          </div>
+
+          <div class="presets-grid" id="presets-container"></div>
+
+          <div class="controls-group">
+            <div class="group-header">
+              <h4 class="group-title">Fine-Tuning Controls</h4>
+              <span class="badge" id="realtime-badge">Live Canvas Preview</span>
+            </div>
+
+            <div class="slider-control">
+              <div class="slider-header">
+                <label for="slider-sharpness"><i class="ph-bold ph-scissors"></i> Clarity & Edge Sharpness</label>
+                <span class="slider-value" id="val-sharpness">1.4x</span>
+              </div>
+              <input type="range" id="slider-sharpness" min="0" max="3.5" step="0.1" value="1.4">
+            </div>
+
+            <div class="slider-control">
+              <div class="slider-header">
+                <label for="slider-clahe"><i class="ph-bold ph-circle-half"></i> Dynamic Range (CLAHE)</label>
+                <span class="slider-value" id="val-clahe">2.2</span>
+              </div>
+              <input type="range" id="slider-clahe" min="0" max="5.0" step="0.2" value="2.2">
+            </div>
+
+            <div class="slider-control">
+              <div class="slider-header">
+                <label for="slider-denoise"><i class="ph-bold ph-drop"></i> Denoise & Smoothing</label>
+                <span class="slider-value" id="val-denoise">10</span>
+              </div>
+              <input type="range" id="slider-denoise" min="0" max="40" step="2" value="10">
+            </div>
+
+            <div class="slider-control">
+              <div class="slider-header">
+                <label for="slider-vibrance"><i class="ph-bold ph-paint-brush-broad"></i> Vibrance & Saturation</label>
+                <span class="slider-value" id="val-vibrance">1.35x</span>
+              </div>
+              <input type="range" id="slider-vibrance" min="0.5" max="2.5" step="0.05" value="1.35">
+            </div>
+
+            <div class="slider-control">
+              <div class="slider-header">
+                <label for="slider-contrast"><i class="ph-bold ph-sun-horizon"></i> Contrast & Tone</label>
+                <span class="slider-value" id="val-contrast">1.15x</span>
+              </div>
+              <input type="range" id="slider-contrast" min="0.5" max="2.0" step="0.05" value="1.15">
+            </div>
+
+            <div class="slider-control">
+              <div class="slider-header">
+                <label for="slider-warmth"><i class="ph-bold ph-thermometer-simple"></i> Color Temperature</label>
+                <span class="slider-value" id="val-warmth">0 Neutral</span>
+              </div>
+              <input type="range" id="slider-warmth" min="-30" max="30" step="1" value="0">
+            </div>
+
+            <div class="slider-control">
+              <div class="slider-header">
+                <label for="slider-scale"><i class="ph-bold ph-arrows-out-simple"></i> Upscale Resolution</label>
+                <span class="slider-value" id="val-scale">1.0x (Original)</span>
+              </div>
+              <input type="range" id="slider-scale" min="1.0" max="4.0" step="1.0" value="1.0">
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-section hidden" id="section-ai">
+          <div class="section-header">
+            <div class="section-title">
+              <i class="ph-fill ph-robot"></i>
+              <h3>AI Model Pipeline</h3>
+            </div>
+            <span class="badge badge-ai">Multi-Provider</span>
+          </div>
+
+          <div class="ai-config-group">
+            <div class="input-field">
+              <label for="ai-provider-select">AI Engine Provider</label>
+              <select id="ai-provider-select" class="custom-select">
+                <option value="replicate">Replicate (Real-ESRGAN / Face Fix)</option>
+                <option value="stability">Stability AI (SDXL / Conservative)</option>
+                <option value="huggingface">Hugging Face (SwinIR / Restormer)</option>
+              </select>
+            </div>
+
+            <div class="input-field">
+              <label for="ai-model-select">Enhancement Model</label>
+              <select id="ai-model-select" class="custom-select"></select>
+            </div>
+
+            <div class="ai-model-card" id="ai-model-info-box">
+              <div class="model-meta-row">
+                <span class="model-badge" id="ai-model-badge">SOTA Upscaler</span>
+                <span class="model-spec" id="ai-model-spec">Scale: 4x</span>
+              </div>
+              <p class="model-desc" id="ai-model-desc">State-of-the-art super resolution for photorealistic upscaling.</p>
+            </div>
+
+            <div class="ai-options-grid">
+              <div class="input-field">
+                <label for="ai-scale-select">Target Scale Factor</label>
+                <select id="ai-scale-select" class="custom-select">
+                  <option value="2">2x Super-Resolution</option>
+                  <option value="4" selected>4x Ultra-Resolution</option>
+                  <option value="8">8x Extreme Upscale</option>
+                </select>
+              </div>
+
+              <div class="checkbox-control" id="face-enhance-wrapper">
+                <input type="checkbox" id="ai-face-enhance" checked>
+                <label for="ai-face-enhance">
+                  <span class="checkbox-label">GFPGAN Face Restore</span>
+                  <span class="checkbox-sub">Reconstruct facial features, eyes, and skin texture</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="input-field" id="ai-prompt-wrapper">
+              <label for="ai-custom-prompt">Creative Upscale Prompt (Optional)</label>
+              <input type="text" id="ai-custom-prompt" placeholder="e.g. Masterpiece, high fidelity, 8k crisp details" class="custom-input">
+            </div>
+
+            <div class="ai-key-reminder" id="ai-key-reminder-box">
+              <i class="ph-fill ph-warning-circle"></i>
+              <div>
+                <span>API key needed for <strong id="current-provider-name">Replicate</strong></span>
+              </div>
+              <button class="btn-link" id="btn-quick-config-key">Enter Key</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-footer">
+          <button class="btn btn-primary btn-large btn-glow" id="btn-enhance-main">
+            <span class="btn-content">
+              <i class="ph-bold ph-sparkle"></i>
+              <span id="btn-enhance-text">Render High-Quality HD</span>
+            </span>
+            <div class="loader-spinner hidden" id="enhance-spinner"></div>
+          </button>
+          
+          <div class="export-row">
+            <select id="export-format" class="custom-select compact">
+              <option value="PNG">PNG (Lossless)</option>
+              <option value="JPEG">JPEG (High Quality)</option>
+              <option value="WEBP">WEBP (Optimized)</option>
+            </select>
+            <button class="btn btn-secondary" id="btn-download" disabled>
+              <i class="ph-bold ph-download-simple"></i>
+              <span>Download</span>
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <section class="viewer-container glass-card">
+        
+        <div class="dropzone-empty" id="dropzone">
+          <input type="file" id="file-input" accept="image/png, image/jpeg, image/webp, image/bmp" class="hidden-input">
+          <div class="dropzone-content">
+            <div class="upload-icon-wrapper">
+              <i class="ph-bold ph-cloud-arrow-up"></i>
+            </div>
+            <h2>Drop your image here to enhance</h2>
+            <p>Supports PNG, JPG, WEBP with high-performance instant local filters & Generative AI super-resolution.</p>
+            
+            <div class="upload-actions">
+              <button class="btn btn-primary" id="btn-browse-file">
+                <i class="ph-bold ph-folder-open"></i>
+                <span>Select from Computer</span>
+              </button>
+              <span class="or-separator">or</span>
+              <button class="btn btn-glass" id="btn-load-sample">
+                <i class="ph-bold ph-image"></i>
+                <span>Load Sample Photo</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="viewport-active hidden" id="viewport-active">
+          <div class="viewport-toolbar">
+            <div class="view-modes" role="group">
+              <button class="view-btn active" id="mode-split" title="Split Before/After Slider">
+                <i class="ph-bold ph-arrows-split"></i>
+                <span>Split Slider</span>
+              </button>
+              <button class="view-btn" id="mode-side" title="Side by Side">
+                <i class="ph-bold ph-columns"></i>
+                <span>Side by Side</span>
+              </button>
+              <button class="view-btn" id="mode-original-hold" title="Hold or press and hold spacebar to see Original">
+                <i class="ph-bold ph-eye"></i>
+                <span>Hold Original</span>
+              </button>
+            </div>
+
+            <div class="viewport-stats" id="viewport-stats">
+              <span class="stat-tag" id="stat-res-orig">Original: 0x0</span>
+              <i class="ph-bold ph-arrow-right"></i>
+              <span class="stat-tag stat-highlight" id="stat-res-enhanced">Enhanced: 0x0</span>
+            </div>
+
+            <div class="viewport-actions">
+              <button class="btn btn-icon btn-glass" id="btn-change-image" title="Upload New Image">
+                <i class="ph-bold ph-arrow-counter-clockwise"></i>
+              </button>
+              <button class="btn btn-icon btn-glass" id="btn-fullscreen" title="Toggle Fullscreen">
+                <i class="ph-bold ph-arrows-out"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="comparison-stage" id="comparison-stage">
+            
+            <div class="side-by-side-container hidden" id="side-by-side-container">
+              <div class="side-box">
+                <div class="side-badge">ORIGINAL (BEFORE)</div>
+                <img id="img-side-orig" alt="Original" class="side-img">
+              </div>
+              <div class="side-box">
+                <div class="side-badge side-badge-enhanced">ENHANCED (AFTER)</div>
+                <img id="img-side-enhanced" alt="Enhanced" class="side-img">
+              </div>
+            </div>
+
+            <div class="image-wrapper" id="image-wrapper">
+              <img id="img-enhanced" alt="Enhanced preview" class="stage-img">
+
+              <div class="before-clipped-container" id="before-container">
+                <img id="img-original" alt="Original preview" class="stage-img before-img-fixed">
+                <div class="badge-stage badge-before">BEFORE</div>
+              </div>
+
+              <div class="badge-stage badge-after">AFTER</div>
+
+              <div class="slider-handle" id="slider-handle">
+                <div class="handle-line"></div>
+                <div class="handle-button">
+                  <i class="ph-bold ph-caret-left"></i>
+                  <i class="ph-bold ph-caret-right"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="processing-overlay hidden" id="processing-overlay">
+              <div class="processing-card glass-card">
+                <div class="spinner-large"></div>
+                <h3 id="process-status-title">Enhancing Image...</h3>
+                <p id="process-status-desc">Executing algorithm / AI neural super-resolution</p>
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill" id="process-progress-fill"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop hidden" id="api-modal">
+    <div class="modal-card modal-card-glow glass-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <div class="modal-icon-badge modal-icon-key">
+            <i class="ph-fill ph-key"></i>
+          </div>
+          <div>
+            <h3>AI Engine API Keys</h3>
+            <span class="modal-badge-subtitle">State-of-the-Art Super-Resolution & Face Reconstruction</span>
+          </div>
+        </div>
+        <button class="btn-icon btn-glass" id="btn-close-modal" aria-label="Close modal">
+          <i class="ph-bold ph-x"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-banner-info">
+          <i class="ph-fill ph-shield-check"></i>
+          <p>
+            Keys are saved <strong>strictly in your browser (localStorage)</strong>. They are never stored on any database and are transmitted encrypted only when you run AI models.
+          </p>
+        </div>
+
+        <div class="api-keys-grid">
+          <div class="api-key-item">
+            <div class="api-key-header">
+              <div class="provider-label">
+                <span class="provider-dot dot-replicate"></span>
+                <strong>Replicate</strong>
+                <span class="model-tags">Real-ESRGAN · GFPGAN · CodeFormer</span>
+              </div>
+              <a href="https://replicate.com/account/api-tokens" target="_blank" rel="noopener" class="key-link">Get Token &nearr;</a>
+            </div>
+            <div class="key-input-wrapper">
+              <input type="password" id="key-replicate" placeholder="r8_********************************" class="custom-input key-input">
+              <button class="btn-icon btn-toggle-eye" data-target="key-replicate" type="button"><i class="ph-bold ph-eye"></i></button>
+            </div>
+          </div>
+
+          <div class="api-key-item">
+            <div class="api-key-header">
+              <div class="provider-label">
+                <span class="provider-dot dot-stability"></span>
+                <strong>Stability AI</strong>
+                <span class="model-tags">SDXL Creative · Conservative 4K</span>
+              </div>
+              <a href="https://platform.stability.ai/account/keys" target="_blank" rel="noopener" class="key-link">Get Key &nearr;</a>
+            </div>
+            <div class="key-input-wrapper">
+              <input type="password" id="key-stability" placeholder="sk-********************************" class="custom-input key-input">
+              <button class="btn-icon btn-toggle-eye" data-target="key-stability" type="button"><i class="ph-bold ph-eye"></i></button>
+            </div>
+          </div>
+
+          <div class="api-key-item">
+            <div class="api-key-header">
+              <div class="provider-label">
+                <span class="provider-dot dot-hf"></span>
+                <strong>Hugging Face</strong>
+                <span class="model-tags">SwinIR · Restormer Transformer</span>
+              </div>
+              <a href="https://huggingface.co/settings/tokens" target="_blank" rel="noopener" class="key-link">Get Token &nearr;</a>
+            </div>
+            <div class="key-input-wrapper">
+              <input type="password" id="key-hf" placeholder="hf_********************************" class="custom-input key-input">
+              <button class="btn-icon btn-toggle-eye" data-target="key-hf" type="button"><i class="ph-bold ph-eye"></i></button>
+            </div>
+          </div>
+
+          <div class="api-key-item">
+            <div class="api-key-header">
+              <div class="provider-label">
+                <span class="provider-dot dot-openai"></span>
+                <strong>OpenAI</strong>
+                <span class="model-tags">DALL-E 3 · GPT-4o Vision</span>
+              </div>
+              <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener" class="key-link">Get Key &nearr;</a>
+            </div>
+            <div class="key-input-wrapper">
+              <input type="password" id="key-openai" placeholder="sk-proj-********************************" class="custom-input key-input">
+              <button class="btn-icon btn-toggle-eye" data-target="key-openai" type="button"><i class="ph-bold ph-eye"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btn-clear-keys" type="button">Clear All Keys</button>
+        <button class="btn btn-primary btn-glow" id="btn-save-keys" type="button">
+          <i class="ph-bold ph-check"></i>
+          <span>Save & Activate</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="help-modal">
+    <div class="modal-card modal-card-wide modal-card-glow glass-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <div class="modal-icon-badge modal-icon-guide">
+            <i class="ph-fill ph-book-open"></i>
+          </div>
+          <div>
+            <h3>WebMagic User Guide & CLI</h3>
+            <span class="modal-badge-subtitle">Everything you need to enhance images locally and in the cloud</span>
+          </div>
+        </div>
+        <button class="btn-icon btn-glass" id="btn-close-help" aria-label="Close guide">
+          <i class="ph-bold ph-x"></i>
+        </button>
+      </div>
+
+      <div class="modal-body help-body">
+        <div class="guide-cards-grid">
+          <div class="guide-card">
+            <div class="guide-card-header">
+              <i class="ph-fill ph-sparkle text-purple"></i>
+              <h4> EsMagic (Our Default Model)</h4>
+            </div>
+            <p>Our autonomous all-in-one neural-algorithmic pipeline. It analyzes blur metrics, dynamic range, noise floor, and color cast automatically-producing vivid, crystal-clear results without manual parameter tweaking.</p>
+          </div>
+
+          <div class="guide-card">
+            <div class="guide-card-header">
+              <i class="ph-fill ph-lightning text-cyan"></i>
+              <h4> Instant Non-AI Engine</h4>
+            </div>
+            <p>100% private, local processing. Powered by OpenCV and PIL algorithms: CLAHE dynamic range expansion, bilateral denoising, unsharp frequency crispening, and Lanczos-4 upscaling.</p>
+          </div>
+
+          <div class="guide-card">
+            <div class="guide-card-header">
+              <i class="ph-fill ph-robot text-emerald"></i>
+              <h4> Generative AI Super-Resolution</h4>
+            </div>
+            <p>Connect your API keys for deep-learning super resolution up to 8x, face restoration with Tencent's GFPGAN and CodeFormer, and generative remastering via Stability SDXL.</p>
+          </div>
+        </div>
+
+        <div class="cli-section-box">
+          <div class="cli-box-header">
+            <div class="cli-title"><i class="ph-bold ph-terminal-window"></i> CLI Command Cheat Sheet</div>
+            <span class="cli-badge">Python 3.10+</span>
+          </div>
+          <pre class="code-box"><code><span class="c-dim"># 1. View all available models and presets:</span>
+<span class="c-cyan">python magic_cli.py models</span>
+
+<span class="c-dim"># 2. Enhance image with EsMagic (Default):</span>
+<span class="c-cyan">python magic_cli.py enhance input.jpg -o output.png</span>
+
+<span class="c-dim"># 3. Enhance image with specific preset (e.g. Crisp Portrait, Night Restore):</span>
+<span class="c-cyan">python magic_cli.py enhance photo.jpg -o photo_enhanced.png --preset crisp_portrait</span>
+
+<span class="c-dim"># 4. Batch enhance an entire directory:</span>
+<span class="c-cyan">python magic_cli.py batch ./photos/ -o ./enhanced/</span>
+
+<span class="c-dim"># 5. Run Generative AI Super-Resolution (Replicate Real-ESRGAN 4x):</span>
+<span class="c-cyan">python magic_cli.py enhance photo.jpg -o ai_4k.png --mode ai --provider replicate --model real-esrgan --scale 4 --api-key "r8_..."</span></code></pre>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <a href="https://github.com/44tl/WebMagic" target="_blank" rel="noopener" class="btn btn-secondary">
+          <i class="ph-bold ph-github-logo"></i>
+          <span>View on GitHub</span>
+        </a>
+        <button class="btn btn-primary" id="btn-close-help-action">Got it!</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+name: WebMagic CI & Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run Engine & Preset Tests
+      run: |
+        PYTHONPATH=. python -c "import tests.test_engine as t; t.test_non_ai_enhancement_pipeline(); t.test_upscale_2x(); t.test_all_presets(); t.test_ai_supported_models_registry(); print('ALL TESTS PASSED!')"
+
+    - name: Run EsMagic Pipeline Test
+      run: |
+        python -c "from engine.esmagic import EsMagicEngine; from PIL import Image; import io; img = Image.new('RGB', (100, 100), (100, 120, 150)); buf = io.BytesIO(); img.save(buf, format='PNG'); out = EsMagicEngine.process_bytes(buf.getvalue()); assert len(out) > 0; print('ESMAGIC PASSED!')"
+
+    - name: Verify CLI Command
+      run: |
+        python magic_cli.py models
