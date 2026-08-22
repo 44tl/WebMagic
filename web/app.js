@@ -254,7 +254,8 @@ const DEFAULT_MODELS = {
 async function loadPresets() {
   try {
     const res = await fetch('/api/presets');
-    if (res.ok) {
+    const contentType = res.headers.get('content-type') || '';
+    if (res.ok && contentType.includes('application/json')) {
       const data = await res.json();
       state.presets = data.presets || DEFAULT_PRESETS;
     } else {
@@ -269,7 +270,8 @@ async function loadPresets() {
 async function loadAiModels() {
   try {
     const res = await fetch('/api/models');
-    if (res.ok) {
+    const contentType = res.headers.get('content-type') || '';
+    if (res.ok && contentType.includes('application/json')) {
       const data = await res.json();
       state.modelsData = data.providers || DEFAULT_MODELS;
     } else {
@@ -746,8 +748,15 @@ async function renderNonAiServer() {
     });
 
     if (!resp.ok) {
-      const err = await resp.json();
-      throw new Error(err.detail || 'Processing failed');
+      let errMsg = 'Processing failed';
+      try {
+        const errJson = await resp.json();
+        errMsg = errJson.detail || errMsg;
+      } catch (_) {
+        const text = await resp.text();
+        if (text) errMsg = text.slice(0, 120);
+      }
+      throw new Error(errMsg);
     }
 
     const blob = await resp.blob();
@@ -815,8 +824,15 @@ async function renderAiServer() {
     });
 
     if (!resp.ok) {
-      const err = await resp.json();
-      throw new Error(err.detail || 'AI enhancement failed');
+      let errMsg = 'AI enhancement failed';
+      try {
+        const errJson = await resp.json();
+        errMsg = errJson.detail || errMsg;
+      } catch (_) {
+        const text = await resp.text();
+        if (text) errMsg = text.slice(0, 120);
+      }
+      throw new Error(errMsg);
     }
 
     const blob = await resp.blob();
